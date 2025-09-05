@@ -129,7 +129,9 @@ const Profile = () => {
   }
 
   const getInitials = (name: string, surname: string) => {
-    return `${name.charAt(0)}${surname.charAt(0)}`.toUpperCase();
+    const firstName = name?.charAt(0) || 'U';
+    const lastName = surname?.charAt(0) || 'N';
+    return `${firstName}${lastName}`.toUpperCase();
   };
 
   return (
