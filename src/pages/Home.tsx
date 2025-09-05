@@ -18,7 +18,7 @@ const Home = () => {
               <span className="gradient-text">GOG</span>
             </h1>
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">
-              Giver of the Givers
+              Gift of the Givers
             </h2>
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
               Connecting compassionate hearts with those in need. Join our mission to make a meaningful impact in communities worldwide.
@@ -71,7 +71,7 @@ const Home = () => {
           <h2 className="text-3xl font-bold text-center mb-8">About GOG</h2>
           <div className="prose prose-lg mx-auto text-center">
             <p className="text-muted-foreground leading-relaxed mb-6">
-              GOG (Giver of the Givers) is a comprehensive platform designed to connect compassionate individuals 
+              GOG (Gift of the Givers) is a comprehensive platform designed to connect compassionate individuals 
               with communities in need. Our mission is to streamline disaster response, volunteer coordination, 
               and donation management to maximize the impact of humanitarian efforts.
             </p>
@@ -162,10 +162,10 @@ const Home = () => {
         <div className="container mx-auto text-center">
           <div className="flex items-center justify-center space-x-2 mb-4">
             <Heart className="w-6 h-6" fill="currentColor" />
-            <span className="text-lg font-semibold">GOG - Giver of the Givers</span>
+            <span className="text-lg font-semibold">GOG - Gift of the Givers</span>
           </div>
           <p className="text-primary-foreground/80">
-            © 2024 Giver of the Givers. Making a difference, one act of kindness at a time.
+            © 2024 Gift of the Givers. Making a difference, one act of kindness at a time.
           </p>
         </div>
       </footer>

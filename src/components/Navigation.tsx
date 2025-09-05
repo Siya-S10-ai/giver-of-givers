@@ -39,7 +39,7 @@ const Navigation = ({ user, onLogout }: NavigationProps) => {
             <Heart className="w-8 h-8 text-secondary" fill="currentColor" />
             <div>
               <h1 className="text-xl font-bold gradient-text">GOG</h1>
-              <p className="text-xs text-muted-foreground -mt-1">Giver of the Givers</p>
+              <p className="text-xs text-muted-foreground -mt-1">Gift of the Givers</p>
             </div>
           </Link>
 
