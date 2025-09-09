@@ -1,0 +1,277 @@
+@page "/register"
+@using GiftOfGivers.Shared.DTOs
+@using System.ComponentModel.DataAnnotations
+@inject IAuthService AuthService
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Register - Gift of the Givers</PageTitle>
+
+<div class="min-h-screen bg-background flex items-center justify-center px-4 py-8">
+    <div class="max-w-md w-full">
+        <div class="bg-card rounded-lg shadow-lg p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="flex items-center justify-center space-x-2 mb-4">
+                    <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-lg">G</span>
+                    </div>
+                    <h1 class="text-2xl font-bold gradient-text">Gift of the Givers</h1>
+                </div>
+                <h2 class="text-xl font-semibold text-foreground mb-2">Create Your Account</h2>
+                <p class="text-muted-foreground">Join our mission to make a difference</p>
+            </div>
+
+            @if (isLoading)
+            {
+                <div class="flex justify-center py-8">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                </div>
+            }
+            else
+            {
+                <EditForm Model="registerForm" OnValidSubmit="HandleRegister">
+                    <DataAnnotationsValidator />
+                    
+                    @if (!string.IsNullOrEmpty(errorMessage))
+                    {
+                        <div class="bg-destructive/10 border border-destructive/20 text-destructive px-4 py-3 rounded-lg mb-6">
+                            <p class="text-sm">@errorMessage</p>
+                        </div>
+                    }
+
+                    <!-- Name Fields -->
+                    <div class="grid grid-cols-2 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">First Name</label>
+                            <InputText @bind-Value="registerForm.FirstName" 
+                                     class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                     placeholder="John" />
+                            <ValidationMessage For="@(() => registerForm.FirstName)" class="text-destructive text-xs mt-1" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-foreground mb-2">Last Name</label>
+                            <InputText @bind-Value="registerForm.LastName" 
+                                     class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                     placeholder="Doe" />
+                            <ValidationMessage For="@(() => registerForm.LastName)" class="text-destructive text-xs mt-1" />
+                        </div>
+                    </div>
+
+                    <!-- Email -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-foreground mb-2">Email Address</label>
+                        <InputText @bind-Value="registerForm.Email" 
+                                 type="email" 
+                                 class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                 placeholder="john@example.com" />
+                        <ValidationMessage For="@(() => registerForm.Email)" class="text-destructive text-xs mt-1" />
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-foreground mb-2">Phone Number</label>
+                        <InputText @bind-Value="registerForm.Phone" 
+                                 class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                 placeholder="+1 (555) 123-4567" />
+                        <ValidationMessage For="@(() => registerForm.Phone)" class="text-destructive text-xs mt-1" />
+                    </div>
+
+                    <!-- Role Selection -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-foreground mb-2">I want to join as a:</label>
+                        <div class="grid grid-cols-1 gap-3">
+                            <label class="flex items-start p-3 border border-border rounded-lg hover:bg-muted/20 cursor-pointer @(registerForm.Role == "Reporter" ? "border-primary bg-primary/5" : "")">
+                                <InputRadio Value="Reporter" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
+                                <div>
+                                    <div class="font-medium text-foreground">Reporter</div>
+                                    <div class="text-sm text-muted-foreground">Submit reports about situations that need assistance</div>
+                                </div>
+                            </label>
+                            <label class="flex items-start p-3 border border-border rounded-lg hover:bg-muted/20 cursor-pointer @(registerForm.Role == "Volunteer" ? "border-primary bg-primary/5" : "")">
+                                <InputRadio Value="Volunteer" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
+                                <div>
+                                    <div class="font-medium text-foreground">Volunteer</div>
+                                    <div class="text-sm text-muted-foreground">Help respond to reports and provide assistance</div>
+                                </div>
+                            </label>
+                        </div>
+                        <ValidationMessage For="@(() => registerForm.Role)" class="text-destructive text-xs mt-1" />
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-foreground mb-2">Password</label>
+                        <div class="relative">
+                            <InputText @bind-Value="registerForm.Password" 
+                                     type="@(showPassword ? "text" : "password")" 
+                                     class="w-full px-3 py-2 pr-10 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                     placeholder="Choose a strong password" />
+                            <button type="button" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    @onclick="TogglePasswordVisibility">
+                                @if (showPassword)
+                                {
+                                    <span>👁️</span>
+                                }
+                                else
+                                {
+                                    <span>👁️‍🗨️</span>
+                                }
+                            </button>
+                        </div>
+                        <ValidationMessage For="@(() => registerForm.Password)" class="text-destructive text-xs mt-1" />
+                        <div class="text-xs text-muted-foreground mt-1">
+                            Password must be at least 8 characters long
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div class="mb-6">
+                        <label class="block text-sm font-medium text-foreground mb-2">Confirm Password</label>
+                        <div class="relative">
+                            <InputText @bind-Value="registerForm.ConfirmPassword" 
+                                     type="@(showConfirmPassword ? "text" : "password")" 
+                                     class="w-full px-3 py-2 pr-10 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                     placeholder="Confirm your password" />
+                            <button type="button" 
+                                    class="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                                    @onclick="ToggleConfirmPasswordVisibility">
+                                @if (showConfirmPassword)
+                                {
+                                    <span>👁️</span>
+                                }
+                                else
+                                {
+                                    <span>👁️‍🗨️</span>
+                                }
+                            </button>
+                        </div>
+                        <ValidationMessage For="@(() => registerForm.ConfirmPassword)" class="text-destructive text-xs mt-1" />
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="mb-6">
+                        <label class="flex items-start">
+                            <InputCheckbox @bind-Value="registerForm.AcceptTerms" class="mt-1 mr-3" />
+                            <span class="text-sm text-muted-foreground">
+                                I agree to the <a href="/terms" class="text-primary hover:underline">Terms of Service</a> 
+                                and <a href="/privacy" class="text-primary hover:underline">Privacy Policy</a>
+                            </span>
+                        </label>
+                        <ValidationMessage For="@(() => registerForm.AcceptTerms)" class="text-destructive text-xs mt-1" />
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full btn btn-primary" disabled="@isSubmitting">
+                        @if (isSubmitting)
+                        {
+                            <span class="flex items-center justify-center">
+                                <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Creating Account...
+                            </span>
+                        }
+                        else
+                        {
+                            <span>Create Account</span>
+                        }
+                    </button>
+                </EditForm>
+            }
+
+            <!-- Login Link -->
+            <div class="text-center mt-6 pt-6 border-t border-border">
+                <p class="text-muted-foreground">
+                    Already have an account? 
+                    <a href="/login" class="text-primary hover:underline font-medium">Sign in here</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Additional Info -->
+        <div class="mt-8 text-center text-sm text-muted-foreground">
+            <p>By creating an account, you're joining a community dedicated to helping others.</p>
+        </div>
+    </div>
+</div>
+
+@code {
+    private RegisterFormDto registerForm = new();
+    private bool isLoading = false;
+    private bool isSubmitting = false;
+    private bool showPassword = false;
+    private bool showConfirmPassword = false;
+    private string errorMessage = "";
+
+    private void TogglePasswordVisibility()
+    {
+        showPassword = !showPassword;
+    }
+
+    private void ToggleConfirmPasswordVisibility()
+    {
+        showConfirmPassword = !showConfirmPassword;
+    }
+
+    private async Task HandleRegister()
+    {
+        try
+        {
+            isSubmitting = true;
+            errorMessage = "";
+
+            var result = await AuthService.RegisterAsync(registerForm);
+
+            if (result.Success)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Registration successful! Please check your email to verify your account.");
+                Navigation.NavigateTo("/login");
+            }
+            else
+            {
+                errorMessage = result.Message ?? "Registration failed. Please try again.";
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = "An error occurred during registration. Please try again.";
+            await JSRuntime.InvokeVoidAsync("console.error", "Registration error:", ex.Message);
+        }
+        finally
+        {
+            isSubmitting = false;
+        }
+    }
+
+    public class RegisterFormDto
+    {
+        [Required(ErrorMessage = "First name is required")]
+        [StringLength(50, ErrorMessage = "First name must be less than 50 characters")]
+        public string FirstName { get; set; } = "";
+
+        [Required(ErrorMessage = "Last name is required")]
+        [StringLength(50, ErrorMessage = "Last name must be less than 50 characters")]
+        public string LastName { get; set; } = "";
+
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string Email { get; set; } = "";
+
+        [Phone(ErrorMessage = "Please enter a valid phone number")]
+        public string Phone { get; set; } = "";
+
+        [Required(ErrorMessage = "Please select a role")]
+        public string Role { get; set; } = "";
+
+        [Required(ErrorMessage = "Password is required")]
+        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long")]
+        public string Password { get; set; } = "";
+
+        [Required(ErrorMessage = "Please confirm your password")]
+        [Compare("Password", ErrorMessage = "Passwords do not match")]
+        public string ConfirmPassword { get; set; } = "";
+
+        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept the terms and conditions")]
+        public bool AcceptTerms { get; set; } = false;
+    }
+}

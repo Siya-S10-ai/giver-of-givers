@@ -1,0 +1,317 @@
+@page "/profile"
+@using GiftOfGivers.Shared.DTOs
+@inject IAuthService AuthService
+@inject IApiService ApiService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Profile - Gift of the Givers</PageTitle>
+
+<div class="min-h-screen bg-background">
+    <div class="container mx-auto px-4 py-8">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-card rounded-lg shadow-lg p-6 mb-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h1 class="text-3xl font-bold text-foreground">Profile</h1>
+                    <button class="btn btn-outline" @onclick="ToggleEditMode">
+                        @if (isEditing)
+                        {
+                            <span>Cancel</span>
+                        }
+                        else
+                        {
+                            <span>Edit Profile</span>
+                        }
+                    </button>
+                </div>
+
+                @if (isLoading)
+                {
+                    <div class="flex justify-center py-8">
+                        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                    </div>
+                }
+                else if (profile != null)
+                {
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <!-- Profile Info -->
+                        <div class="lg:col-span-2">
+                            <div class="space-y-6">
+                                <!-- Avatar Section -->
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                                        @GetInitials(profile.FirstName, profile.LastName)
+                                    </div>
+                                    <div>
+                                        <h2 class="text-xl font-semibold text-foreground">@($"{profile.FirstName} {profile.LastName}")</h2>
+                                        <p class="text-muted-foreground">@profile.Role</p>
+                                    </div>
+                                </div>
+
+                                @if (isEditing)
+                                {
+                                    <!-- Edit Form -->
+                                    <EditForm Model="editModel" OnValidSubmit="SaveProfile">
+                                        <DataAnnotationsValidator />
+                                        <ValidationSummary class="text-destructive mb-4" />
+
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-foreground mb-2">First Name</label>
+                                                <InputText @bind-Value="editModel.FirstName" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                                <ValidationMessage For="@(() => editModel.FirstName)" class="text-destructive text-sm" />
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-foreground mb-2">Last Name</label>
+                                                <InputText @bind-Value="editModel.LastName" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                                <ValidationMessage For="@(() => editModel.LastName)" class="text-destructive text-sm" />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-foreground mb-2">Email</label>
+                                            <InputText @bind-Value="editModel.Email" type="email" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                            <ValidationMessage For="@(() => editModel.Email)" class="text-destructive text-sm" />
+                                        </div>
+
+                                        <div>
+                                            <label class="block text-sm font-medium text-foreground mb-2">Phone</label>
+                                            <InputText @bind-Value="editModel.Phone" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                            <ValidationMessage For="@(() => editModel.Phone)" class="text-destructive text-sm" />
+                                        </div>
+
+                                        <div class="flex space-x-4">
+                                            <button type="submit" class="btn btn-primary" disabled="@isSaving">
+                                                @if (isSaving)
+                                                {
+                                                    <span>Saving...</span>
+                                                }
+                                                else
+                                                {
+                                                    <span>Save Changes</span>
+                                                }
+                                            </button>
+                                            <button type="button" class="btn btn-outline" @onclick="CancelEdit">Cancel</button>
+                                        </div>
+                                    </EditForm>
+                                }
+                                else
+                                {
+                                    <!-- View Mode -->
+                                    <div class="space-y-4">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div>
+                                                <label class="block text-sm font-medium text-muted-foreground mb-1">First Name</label>
+                                                <p class="text-foreground">@profile.FirstName</p>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-muted-foreground mb-1">Last Name</label>
+                                                <p class="text-foreground">@profile.LastName</p>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-muted-foreground mb-1">Email</label>
+                                            <p class="text-foreground">@profile.Email</p>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-muted-foreground mb-1">Phone</label>
+                                            <p class="text-foreground">@(string.IsNullOrEmpty(profile.Phone) ? "Not provided" : profile.Phone)</p>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <!-- Statistics Card -->
+                        <div class="space-y-6">
+                            <div class="bg-muted/10 rounded-lg p-4">
+                                <h3 class="text-lg font-semibold text-foreground mb-4">Account Statistics</h3>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-muted-foreground">Member Since</span>
+                                        <span class="text-foreground font-medium">@profile.CreatedAt.ToString("MMM yyyy")</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-muted-foreground">Role</span>
+                                        <span class="text-foreground font-medium">@profile.Role</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-muted-foreground">Status</span>
+                                        <span class="text-success font-medium">Active</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            @if (profile.Role == "Reporter")
+                            {
+                                <div class="bg-muted/10 rounded-lg p-4">
+                                    <h3 class="text-lg font-semibold text-foreground mb-4">Reporter Stats</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-muted-foreground">Reports Submitted</span>
+                                            <span class="text-foreground font-medium">@reportStats.TotalReports</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-muted-foreground">Verified Reports</span>
+                                            <span class="text-success font-medium">@reportStats.VerifiedReports</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                            else if (profile.Role == "Volunteer")
+                            {
+                                <div class="bg-muted/10 rounded-lg p-4">
+                                    <h3 class="text-lg font-semibold text-foreground mb-4">Volunteer Stats</h3>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between">
+                                            <span class="text-muted-foreground">Tasks Completed</span>
+                                            <span class="text-foreground font-medium">@volunteerStats.CompletedTasks</span>
+                                        </div>
+                                        <div class="flex justify-between">
+                                            <span class="text-muted-foreground">Hours Contributed</span>
+                                            <span class="text-success font-medium">@volunteerStats.TotalHours</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-8">
+                        <p class="text-muted-foreground">Unable to load profile information.</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private UserProfileDto? profile;
+    private UserProfileDto editModel = new();
+    private ReporterStatsDto reportStats = new();
+    private VolunteerStatsDto volunteerStats = new();
+    private bool isLoading = true;
+    private bool isEditing = false;
+    private bool isSaving = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadProfile();
+    }
+
+    private async Task LoadProfile()
+    {
+        try
+        {
+            isLoading = true;
+            profile = await ApiService.GetUserProfileAsync();
+            
+            if (profile != null)
+            {
+                editModel = new UserProfileDto
+                {
+                    Id = profile.Id,
+                    FirstName = profile.FirstName,
+                    LastName = profile.LastName,
+                    Email = profile.Email,
+                    Phone = profile.Phone,
+                    Role = profile.Role
+                };
+
+                // Load role-specific stats
+                if (profile.Role == "Reporter")
+                {
+                    reportStats = await ApiService.GetReporterStatsAsync(profile.Id);
+                }
+                else if (profile.Role == "Volunteer")
+                {
+                    volunteerStats = await ApiService.GetVolunteerStatsAsync(profile.Id);
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading profile:", ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void ToggleEditMode()
+    {
+        isEditing = !isEditing;
+        if (!isEditing && profile != null)
+        {
+            // Reset edit model when canceling
+            editModel = new UserProfileDto
+            {
+                Id = profile.Id,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Email = profile.Email,
+                Phone = profile.Phone,
+                Role = profile.Role
+            };
+        }
+    }
+
+    private void CancelEdit()
+    {
+        isEditing = false;
+        if (profile != null)
+        {
+            editModel = new UserProfileDto
+            {
+                Id = profile.Id,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Email = profile.Email,
+                Phone = profile.Phone,
+                Role = profile.Role
+            };
+        }
+    }
+
+    private async Task SaveProfile()
+    {
+        try
+        {
+            isSaving = true;
+            var updatedProfile = await ApiService.UpdateUserProfileAsync(editModel);
+            profile = updatedProfile;
+            isEditing = false;
+            await JSRuntime.InvokeVoidAsync("alert", "Profile updated successfully!");
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error updating profile: {ex.Message}");
+        }
+        finally
+        {
+            isSaving = false;
+        }
+    }
+
+    private string GetInitials(string? firstName, string? lastName)
+    {
+        var firstInitial = !string.IsNullOrEmpty(firstName) ? firstName[0].ToString().ToUpper() : "U";
+        var lastInitial = !string.IsNullOrEmpty(lastName) ? lastName[0].ToString().ToUpper() : "N";
+        return firstInitial + lastInitial;
+    }
+
+    public class ReporterStatsDto
+    {
+        public int TotalReports { get; set; }
+        public int VerifiedReports { get; set; }
+    }
+
+    public class VolunteerStatsDto
+    {
+        public int CompletedTasks { get; set; }
+        public int TotalHours { get; set; }
+    }
+}

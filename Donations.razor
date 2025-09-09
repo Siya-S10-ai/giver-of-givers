@@ -1,0 +1,328 @@
+@page "/donations"
+@using GiftOfGivers.Shared.DTOs
+@inject IApiService ApiService
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Donations - Gift of the Givers</PageTitle>
+
+<div class="min-h-screen bg-background">
+    <!-- Hero Section -->
+    <section class="bg-gradient-primary text-white py-16">
+        <div class="container mx-auto px-4 text-center">
+            <div class="max-w-3xl mx-auto">
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">Make a Difference Today</h1>
+                <p class="text-xl text-primary-foreground/90 mb-8">
+                    Your generous donation helps us provide critical aid to communities in need around the world.
+                </p>
+                <button class="btn btn-hero btn-lg" @onclick="ScrollToDonateForm">
+                    Donate Now
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Impact Statistics -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Your Impact</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">@stats.TotalDonations</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Total Donations</h3>
+                    <p class="text-muted-foreground">Generous contributions received</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-success rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">@stats.FundedProjects</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Projects Funded</h3>
+                    <p class="text-muted-foreground">Emergency response initiatives</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-2xl font-bold text-white">@stats.LivesImpacted</span>
+                    </div>
+                    <h3 class="text-xl font-semibold text-foreground mb-2">Lives Impacted</h3>
+                    <p class="text-muted-foreground">People helped through donations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Donation Form -->
+    <section class="py-16 bg-muted/10" id="donate-form">
+        <div class="container mx-auto px-4">
+            <div class="max-w-2xl mx-auto">
+                <div class="bg-card rounded-lg shadow-lg p-8">
+                    <h2 class="text-3xl font-bold text-center mb-8">Make a Donation</h2>
+                    
+                    @if (isLoading)
+                    {
+                        <div class="flex justify-center py-8">
+                            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                        </div>
+                    }
+                    else
+                    {
+                        <EditForm Model="donationForm" OnValidSubmit="ProcessDonation">
+                            <DataAnnotationsValidator />
+                            <ValidationSummary class="text-destructive mb-4" />
+
+                            <!-- Donation Amount -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-foreground mb-2">Donation Amount</label>
+                                <div class="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
+                                    @foreach (var amount in predefinedAmounts)
+                                    {
+                                        <button type="button" 
+                                                class="@GetAmountButtonClass(amount)" 
+                                                @onclick="() => SelectAmount(amount)">
+                                            $@amount
+                                        </button>
+                                    }
+                                </div>
+                                <div class="relative">
+                                    <span class="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">$</span>
+                                    <InputNumber @bind-Value="donationForm.Amount" 
+                                               class="w-full pl-8 pr-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                               placeholder="Enter custom amount" />
+                                </div>
+                                <ValidationMessage For="@(() => donationForm.Amount)" class="text-destructive text-sm" />
+                            </div>
+
+                            <!-- Donation Type -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-foreground mb-2">Donation Type</label>
+                                <InputSelect @bind-Value="donationForm.Type" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary">
+                                    <option value="">Select donation type</option>
+                                    <option value="Emergency Relief">Emergency Relief</option>
+                                    <option value="Education">Education</option>
+                                    <option value="Healthcare">Healthcare</option>
+                                    <option value="Food Security">Food Security</option>
+                                    <option value="Water & Sanitation">Water & Sanitation</option>
+                                    <option value="General Fund">General Fund</option>
+                                </InputSelect>
+                                <ValidationMessage For="@(() => donationForm.Type)" class="text-destructive text-sm" />
+                            </div>
+
+                            <!-- Frequency -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-foreground mb-2">Frequency</label>
+                                <div class="flex space-x-4">
+                                    <label class="flex items-center">
+                                        <InputRadio Value="OneTime" @bind-Value="donationForm.Frequency" class="mr-2" />
+                                        One-time
+                                    </label>
+                                    <label class="flex items-center">
+                                        <InputRadio Value="Monthly" @bind-Value="donationForm.Frequency" class="mr-2" />
+                                        Monthly
+                                    </label>
+                                    <label class="flex items-center">
+                                        <InputRadio Value="Yearly" @bind-Value="donationForm.Frequency" class="mr-2" />
+                                        Yearly
+                                    </label>
+                                </div>
+                                <ValidationMessage For="@(() => donationForm.Frequency)" class="text-destructive text-sm" />
+                            </div>
+
+                            <!-- Personal Information -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">First Name</label>
+                                    <InputText @bind-Value="donationForm.FirstName" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                    <ValidationMessage For="@(() => donationForm.FirstName)" class="text-destructive text-sm" />
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-foreground mb-2">Last Name</label>
+                                    <InputText @bind-Value="donationForm.LastName" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                    <ValidationMessage For="@(() => donationForm.LastName)" class="text-destructive text-sm" />
+                                </div>
+                            </div>
+
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-foreground mb-2">Email Address</label>
+                                <InputText @bind-Value="donationForm.Email" type="email" class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" />
+                                <ValidationMessage For="@(() => donationForm.Email)" class="text-destructive text-sm" />
+                            </div>
+
+                            <!-- Message -->
+                            <div class="mb-6">
+                                <label class="block text-sm font-medium text-foreground mb-2">Message (Optional)</label>
+                                <InputTextArea @bind-Value="donationForm.Message" 
+                                             class="w-full px-3 py-2 border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary" 
+                                             rows="3" 
+                                             placeholder="Share why you're donating or any special instructions..." />
+                            </div>
+
+                            <!-- Submit Button -->
+                            <button type="submit" class="w-full btn btn-primary btn-lg" disabled="@isProcessing">
+                                @if (isProcessing)
+                                {
+                                    <span>Processing Donation...</span>
+                                }
+                                else
+                                {
+                                    <span>Donate $@donationForm.Amount</span>
+                                }
+                            </button>
+                        </EditForm>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Donations -->
+    <section class="py-16">
+        <div class="container mx-auto px-4">
+            <h2 class="text-3xl font-bold text-center mb-12">Recent Donations</h2>
+            <div class="max-w-4xl mx-auto">
+                @if (recentDonations.Any())
+                {
+                    <div class="space-y-4">
+                        @foreach (var donation in recentDonations)
+                        {
+                            <div class="bg-card rounded-lg p-6 shadow-sm border border-border">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <h3 class="font-semibold text-foreground">@donation.DonorName</h3>
+                                        <p class="text-muted-foreground text-sm">@donation.Type • @donation.CreatedAt.ToString("MMM dd, yyyy")</p>
+                                        @if (!string.IsNullOrEmpty(donation.Message))
+                                        {
+                                            <p class="text-muted-foreground text-sm mt-2">"@donation.Message"</p>
+                                        }
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-2xl font-bold text-primary">$@donation.Amount.ToString("N0")</p>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center py-8">
+                        <p class="text-muted-foreground">Loading recent donations...</p>
+                    </div>
+                }
+            </div>
+        </div>
+    </section>
+</div>
+
+@code {
+    private DonationFormDto donationForm = new();
+    private DonationStatsDto stats = new();
+    private List<DonationDto> recentDonations = new();
+    private bool isLoading = false;
+    private bool isProcessing = false;
+    private int[] predefinedAmounts = { 25, 50, 100, 250, 500, 1000 };
+    private int selectedAmount = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadDonationData();
+    }
+
+    private async Task LoadDonationData()
+    {
+        try
+        {
+            isLoading = true;
+            stats = await ApiService.GetDonationStatsAsync();
+            recentDonations = await ApiService.GetRecentDonationsAsync();
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("console.error", "Error loading donation data:", ex.Message);
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+
+    private void SelectAmount(int amount)
+    {
+        selectedAmount = amount;
+        donationForm.Amount = amount;
+    }
+
+    private string GetAmountButtonClass(int amount)
+    {
+        var baseClass = "px-4 py-2 rounded-lg border transition-colors ";
+        return selectedAmount == amount 
+            ? baseClass + "bg-primary text-white border-primary"
+            : baseClass + "bg-background text-foreground border-border hover:bg-muted";
+    }
+
+    private async Task ProcessDonation()
+    {
+        try
+        {
+            isProcessing = true;
+            var result = await ApiService.ProcessDonationAsync(donationForm);
+            
+            if (result.Success)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", "Thank you for your generous donation! You will receive a confirmation email shortly.");
+                donationForm = new DonationFormDto();
+                selectedAmount = 0;
+                await LoadDonationData(); // Refresh the data
+            }
+            else
+            {
+                await JSRuntime.InvokeVoidAsync("alert", $"Error processing donation: {result.Message}");
+            }
+        }
+        catch (Exception ex)
+        {
+            await JSRuntime.InvokeVoidAsync("alert", $"Error processing donation: {ex.Message}");
+        }
+        finally
+        {
+            isProcessing = false;
+        }
+    }
+
+    private async Task ScrollToDonateForm()
+    {
+        await JSRuntime.InvokeVoidAsync("document.getElementById('donate-form').scrollIntoView", new { behavior = "smooth" });
+    }
+
+    public class DonationFormDto
+    {
+        public decimal Amount { get; set; }
+        public string Type { get; set; } = "";
+        public string Frequency { get; set; } = "OneTime";
+        public string FirstName { get; set; } = "";
+        public string LastName { get; set; } = "";
+        public string Email { get; set; } = "";
+        public string Message { get; set; } = "";
+    }
+
+    public class DonationStatsDto
+    {
+        public int TotalDonations { get; set; } = 1247;
+        public int FundedProjects { get; set; } = 89;
+        public int LivesImpacted { get; set; } = 15632;
+    }
+
+    public class DonationDto
+    {
+        public string DonorName { get; set; } = "";
+        public decimal Amount { get; set; }
+        public string Type { get; set; } = "";
+        public string Message { get; set; } = "";
+        public DateTime CreatedAt { get; set; }
+    }
+
+    public class DonationResult
+    {
+        public bool Success { get; set; }
+        public string Message { get; set; } = "";
+    }
+}
