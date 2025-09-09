@@ -1,0 +1,59 @@
+@page "/404"
+@page "/not-found"
+@inject NavigationManager Navigation
+
+<PageTitle>Page Not Found - Gift of the Givers</PageTitle>
+
+<div class="min-h-screen bg-background flex items-center justify-center px-4">
+    <div class="text-center max-w-md w-full">
+        <!-- 404 Icon/Logo -->
+        <div class="flex items-center justify-center mb-8">
+            <div class="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center">
+                <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-2xl">404</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="space-y-6">
+            <h1 class="text-4xl font-bold text-foreground">Page Not Found</h1>
+            <p class="text-xl text-muted-foreground">
+                The page you're looking for doesn't exist or has been moved.
+            </p>
+            
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                <button @onclick="GoHome" class="btn btn-primary w-full">
+                    Go to Homepage
+                </button>
+                <button @onclick="GoBack" class="btn btn-outline w-full">
+                    Go Back
+                </button>
+            </div>
+        </div>
+
+        <!-- Helpful Links -->
+        <div class="mt-12 pt-8 border-t border-border">
+            <p class="text-muted-foreground mb-4">Or try these popular sections:</p>
+            <div class="grid grid-cols-1 gap-2">
+                <a href="/login" class="text-primary hover:underline">Login</a>
+                <a href="/register" class="text-primary hover:underline">Register</a>
+                <a href="/#about" class="text-primary hover:underline">About Us</a>
+                <a href="/#contact" class="text-primary hover:underline">Contact</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private void GoHome()
+    {
+        Navigation.NavigateTo("/");
+    }
+
+    private void GoBack()
+    {
+        Navigation.NavigateTo(-1);
+    }
+}

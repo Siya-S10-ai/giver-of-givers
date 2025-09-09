@@ -1,0 +1,194 @@
+@page "/"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject AuthenticationStateProvider AuthenticationStateProvider
+@inject IJSRuntime JSRuntime
+
+<PageTitle>Gift of the Givers - Making a Difference Together</PageTitle>
+
+<!-- Hero Section -->
+<section class="relative min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/10 via-secondary/5 to-background overflow-hidden">
+    <div class="absolute inset-0 bg-grid-pattern opacity-5"></div>
+    <div class="container mx-auto px-4 text-center relative z-10">
+        <div class="max-w-4xl mx-auto">
+            <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent leading-tight">
+                Gift of the Givers
+            </h1>
+            <p class="text-xl md:text-2xl text-muted-foreground mb-8 leading-relaxed">
+                Connecting communities through compassion and action. Report needs, volunteer help, and make a real difference in people's lives.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="/register" class="btn btn-primary btn-lg px-8 py-4 text-lg">
+                    Join Our Mission
+                </a>
+                <button @onclick="ScrollToAbout" class="btn btn-outline btn-lg px-8 py-4 text-lg">
+                    Learn More
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Floating Elements -->
+    <div class="absolute top-1/4 left-1/4 w-64 h-64 bg-primary/20 rounded-full blur-3xl animate-pulse"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary/20 rounded-full blur-3xl animate-pulse delay-1000"></div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-16 bg-muted/30">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+            <div class="bg-card rounded-xl p-8 shadow-lg border">
+                <div class="text-4xl font-bold text-primary mb-2">500+</div>
+                <div class="text-muted-foreground">Lives Impacted</div>
+            </div>
+            <div class="bg-card rounded-xl p-8 shadow-lg border">
+                <div class="text-4xl font-bold text-secondary mb-2">50+</div>
+                <div class="text-muted-foreground">Active Volunteers</div>
+            </div>
+            <div class="bg-card rounded-xl p-8 shadow-lg border">
+                <div class="text-4xl font-bold text-accent mb-2">25+</div>
+                <div class="text-muted-foreground">Communities Served</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section -->
+<section id="about" class="py-20 bg-background">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-foreground">About Gift of the Givers</h2>
+                <p class="text-xl text-muted-foreground max-w-3xl mx-auto">
+                    We believe in the power of community and the difference that collective action can make in the lives of those who need it most.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <h3 class="text-2xl font-semibold text-foreground">Our Mission</h3>
+                    <p class="text-muted-foreground leading-relaxed">
+                        Gift of the Givers serves as a bridge between those in need and those willing to help. Our platform enables rapid response to humanitarian needs while building stronger, more connected communities.
+                    </p>
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-primary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-foreground">Rapid Response</h4>
+                                <p class="text-muted-foreground">Quick deployment of aid where it's needed most</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-secondary rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-foreground">Community Driven</h4>
+                                <p class="text-muted-foreground">Powered by volunteers and local knowledge</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start space-x-3">
+                            <div class="w-6 h-6 bg-accent rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                                <span class="text-white text-sm">✓</span>
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-foreground">Transparent Impact</h4>
+                                <p class="text-muted-foreground">Track and measure the difference we make together</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gradient-to-br from-primary/20 to-secondary/20 rounded-2xl p-8 text-center">
+                    <div class="bg-card rounded-xl p-6 shadow-lg">
+                        <h4 class="text-xl font-semibold mb-4 text-foreground">Join Our Impact</h4>
+                        <p class="text-muted-foreground mb-6">Ready to make a difference in your community?</p>
+                        <div class="space-y-3">
+                            <a href="/register" class="btn btn-primary w-full">Become a Volunteer</a>
+                            <a href="/register" class="btn btn-outline w-full">Report a Need</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works -->
+<section class="py-20 bg-muted/30">
+    <div class="container mx-auto px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6 text-foreground">How It Works</h2>
+                <p class="text-xl text-muted-foreground">Simple steps to connect help with those who need it</p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">1</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-foreground">Report a Need</h3>
+                    <p class="text-muted-foreground">Community members report situations that require assistance through our platform</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-secondary rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">2</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-foreground">Volunteers Respond</h3>
+                    <p class="text-muted-foreground">Trained volunteers receive notifications and coordinate response efforts</p>
+                </div>
+                <div class="text-center">
+                    <div class="w-16 h-16 bg-accent rounded-full flex items-center justify-center mx-auto mb-6">
+                        <span class="text-white text-2xl font-bold">3</span>
+                    </div>
+                    <h3 class="text-xl font-semibold mb-4 text-foreground">Impact Delivered</h3>
+                    <p class="text-muted-foreground">Help reaches those in need, creating positive change in communities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-background">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-3xl md:text-4xl font-bold mb-6 text-foreground">Get in Touch</h2>
+            <p class="text-xl text-muted-foreground mb-12">
+                Have questions about our mission or want to get involved? We'd love to hear from you.
+            </p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-card rounded-xl p-6 shadow-lg border">
+                    <div class="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-primary text-xl">📧</span>
+                    </div>
+                    <h3 class="font-semibold mb-2 text-foreground">Email Us</h3>
+                    <p class="text-muted-foreground">info@giftofgivers.org</p>
+                </div>
+                <div class="bg-card rounded-xl p-6 shadow-lg border">
+                    <div class="w-12 h-12 bg-secondary/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-secondary text-xl">📞</span>
+                    </div>
+                    <h3 class="font-semibold mb-2 text-foreground">Call Us</h3>
+                    <p class="text-muted-foreground">+1 (555) 123-4567</p>
+                </div>
+                <div class="bg-card rounded-xl p-6 shadow-lg border">
+                    <div class="w-12 h-12 bg-accent/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <span class="text-accent text-xl">📍</span>
+                    </div>
+                    <h3 class="font-semibold mb-2 text-foreground">Visit Us</h3>
+                    <p class="text-muted-foreground">123 Community St, City</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@code {
+    private async Task ScrollToAbout()
+    {
+        await JSRuntime.InvokeVoidAsync("scrollToElement", "about");
+    }
+}
