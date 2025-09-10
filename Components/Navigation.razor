@@ -1,0 +1,170 @@
+@using GiftOfGivers.Client.Components.UI
+@using GiftOfGivers.Client.Helpers
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+<header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="container mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+            <!-- Logo -->
+            <a href="/" class="flex items-center space-x-2" @onclick="NavigateToHome" @onclick:preventDefault="true">
+                <svg class="w-8 h-8 text-secondary" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">GOG</h1>
+                    <p class="text-xs text-muted-foreground -mt-1">Gift of the Givers</p>
+                </div>
+            </a>
+
+            <!-- Desktop Navigation -->
+            <nav class="hidden md:flex items-center space-x-8">
+                <button @onclick="() => ScrollToSection("about")" class="text-foreground hover:text-primary transition-colors">
+                    About
+                </button>
+                <button @onclick="() => ScrollToSection("contact")" class="text-foreground hover:text-primary transition-colors">
+                    Contact Us
+                </button>
+                
+                @if (User != null)
+                {
+                    <div class="flex items-center space-x-4">
+                        <a href="/profile" class="text-foreground hover:text-primary transition-colors">
+                            Profile
+                        </a>
+                        <a href="@GetDashboardUrl()" class="text-foreground hover:text-primary transition-colors">
+                            Dashboard
+                        </a>
+                        <Button Variant="outline" OnClick="HandleLogout">
+                            Logout
+                        </Button>
+                    </div>
+                }
+                else
+                {
+                    <div class="flex items-center space-x-4">
+                        <a href="/login">
+                            <Button Variant="outline">Login</Button>
+                        </a>
+                        <a href="/register">
+                            <Button Class="bg-gradient-primary">Register</Button>
+                        </a>
+                    </div>
+                }
+            </nav>
+
+            <!-- Mobile menu button -->
+            <button class="md:hidden" @onclick="ToggleMobileMenu">
+                @if (isMenuOpen)
+                {
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                }
+                else
+                {
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                }
+            </button>
+        </div>
+
+        <!-- Mobile Navigation -->
+        @if (isMenuOpen)
+        {
+            <div class="md:hidden py-4 border-t">
+                <div class="flex flex-col space-y-4">
+                    <button @onclick="() => ScrollToSection("about")" class="text-left text-foreground hover:text-primary transition-colors">
+                        About
+                    </button>
+                    <button @onclick="() => ScrollToSection("contact")" class="text-left text-foreground hover:text-primary transition-colors">
+                        Contact Us
+                    </button>
+                    
+                    @if (User != null)
+                    {
+                        <a href="/profile" class="text-foreground hover:text-primary transition-colors" @onclick="CloseMobileMenu">
+                            Profile
+                        </a>
+                        <a href="@GetDashboardUrl()" class="text-foreground hover:text-primary transition-colors" @onclick="CloseMobileMenu">
+                            Dashboard
+                        </a>
+                        <Button Variant="outline" OnClick="HandleLogout" Class="w-fit">
+                            Logout
+                        </Button>
+                    }
+                    else
+                    {
+                        <div class="flex flex-col space-y-2">
+                            <a href="/login" @onclick="CloseMobileMenu">
+                                <Button Variant="outline" Class="w-full">Login</Button>
+                            </a>
+                            <a href="/register" @onclick="CloseMobileMenu">
+                                <Button Class="bg-gradient-primary w-full">Register</Button>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+    </div>
+</header>
+
+@code {
+    [Parameter] public UserModel? User { get; set; }
+    [Parameter] public EventCallback OnLogout { get; set; }
+
+    private bool isMenuOpen = false;
+
+    public class UserModel
+    {
+        public string Username { get; set; } = string.Empty;
+        public string Role { get; set; } = string.Empty; // "volunteer", "reporter", "admin"
+    }
+
+    private void ToggleMobileMenu()
+    {
+        isMenuOpen = !isMenuOpen;
+    }
+
+    private void CloseMobileMenu()
+    {
+        isMenuOpen = false;
+    }
+
+    private async Task NavigateToHome()
+    {
+        Navigation.NavigateTo("/");
+        isMenuOpen = false;
+    }
+
+    private string GetDashboardUrl()
+    {
+        return User?.Role switch
+        {
+            "reporter" => "/reporter-dashboard",
+            "volunteer" => "/volunteer-dashboard",
+            _ => "/volunteer-dashboard"
+        };
+    }
+
+    private async Task ScrollToSection(string sectionId)
+    {
+        if (Navigation.Uri != Navigation.BaseUri)
+        {
+            Navigation.NavigateTo("/");
+            // Wait a bit for navigation to complete, then scroll
+            await Task.Delay(100);
+        }
+        
+        await JSRuntime.InvokeVoidAsync("eval", $"document.getElementById('{sectionId}')?.scrollIntoView({{ behavior: 'smooth' }})");
+        isMenuOpen = false;
+    }
+
+    private async Task HandleLogout()
+    {
+        isMenuOpen = false;
+        await OnLogout.InvokeAsync();
+    }
+}

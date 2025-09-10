@@ -1,0 +1,26 @@
+@using GiftOfGivers.Client.Helpers
+
+<div role="alert" class="@GetAlertClasses()" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string Variant { get; set; } = "default";
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetAlertClasses()
+    {
+        var baseClasses = "relative w-full rounded-lg border p-4";
+        
+        var variantClasses = Variant switch
+        {
+            "default" => "bg-background text-foreground",
+            "destructive" => "border-destructive/50 text-destructive dark:border-destructive",
+            _ => "bg-background text-foreground"
+        };
+
+        return Utils.Cn(baseClasses, variantClasses, Class);
+    }
+}

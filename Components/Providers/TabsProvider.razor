@@ -1,0 +1,18 @@
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    
+    private Tabs? _tabs;
+
+    public void SetTabs(Tabs tabs)
+    {
+        _tabs = tabs;
+    }
+
+    protected override void BuildRenderTree(Microsoft.AspNetCore.Components.Rendering.RenderTreeBuilder builder)
+    {
+        builder.OpenComponent<CascadingValue<TabsProvider>>(0);
+        builder.AddAttribute(1, "Value", this);
+        builder.AddAttribute(2, "ChildContent", ChildContent);
+        builder.CloseComponent();
+    }
+}

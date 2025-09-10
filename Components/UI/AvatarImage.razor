@@ -1,0 +1,26 @@
+@using GiftOfGivers.Client.Helpers
+
+<img class="@GetImageClasses()" 
+     src="@Src" 
+     alt="@Alt"
+     @onerror="OnImageError"
+     @attributes="AdditionalAttributes" />
+
+@code {
+    [Parameter] public string? Src { get; set; }
+    [Parameter] public string? Alt { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback OnError { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetImageClasses()
+    {
+        var baseClasses = "aspect-square h-full w-full";
+        return Utils.Cn(baseClasses, Class);
+    }
+
+    private async Task OnImageError()
+    {
+        await OnError.InvokeAsync();
+    }
+}

@@ -1,0 +1,28 @@
+@using GiftOfGivers.Client.Helpers
+
+<select class="@GetSelectClasses()" 
+        value="@Value"
+        @onchange="OnValueChanged"
+        @attributes="AdditionalAttributes">
+    @ChildContent
+</select>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string> OnValueChanged { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetSelectClasses()
+    {
+        var baseClasses = "flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+        return Utils.Cn(baseClasses, Class);
+    }
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await OnValueChanged.InvokeAsync(Value ?? "");
+    }
+}

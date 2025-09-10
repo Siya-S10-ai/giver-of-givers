@@ -1,0 +1,16 @@
+projectId = "gift-of-givers-azure-project"
+
+[database]
+server = "your-server.database.windows.net"
+database = "GiftOfGivers"
+user = "your-username"
+password = "your-password"
+encrypt = true
+trustServerCertificate = false
+connectionTimeout = 30
+commandTimeout = 30
+
+[features]
+enableRetryLogic = true
+maxRetries = 3
+retryDelay = 1000

@@ -1,0 +1,30 @@
+@using GiftOfGivers.Client.Helpers
+
+<div class="@Utils.Cn("", Class)" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public EventCallback<string> OnValueChange { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+    
+    [CascadingParameter] public TabsProvider? TabsProvider { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (TabsProvider != null)
+        {
+            TabsProvider.SetTabs(this);
+        }
+    }
+
+    public async Task SetValue(string value)
+    {
+        Value = value;
+        await OnValueChange.InvokeAsync(value);
+        StateHasChanged();
+    }
+}

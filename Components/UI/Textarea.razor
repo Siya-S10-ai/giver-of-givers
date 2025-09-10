@@ -1,0 +1,29 @@
+@using GiftOfGivers.Client.Helpers
+
+<textarea class="@GetTextareaClasses()" 
+          value="@Value" 
+          placeholder="@Placeholder"
+          rows="@Rows"
+          @onchange="OnValueChanged"
+          @attributes="AdditionalAttributes"></textarea>
+
+@code {
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public int Rows { get; set; } = 4;
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback<string> OnValueChanged { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetTextareaClasses()
+    {
+        var baseClasses = "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+        return Utils.Cn(baseClasses, Class);
+    }
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await OnValueChanged.InvokeAsync(Value);
+    }
+}

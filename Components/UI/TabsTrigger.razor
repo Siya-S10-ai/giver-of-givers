@@ -1,0 +1,35 @@
+@using GiftOfGivers.Client.Helpers
+
+<button class="@GetTabsTriggerClasses()" 
+        @onclick="HandleClick" 
+        @attributes="AdditionalAttributes">
+    @ChildContent
+</button>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback OnClick { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    [CascadingParameter] public Tabs? ParentTabs { get; set; }
+
+    private bool IsActive => ParentTabs?.Value == Value;
+
+    private string GetTabsTriggerClasses()
+    {
+        var baseClasses = "inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50";
+        var stateClasses = IsActive ? "bg-background text-foreground shadow-sm" : "";
+        return Utils.Cn(baseClasses, stateClasses, Class);
+    }
+
+    private async Task HandleClick()
+    {
+        if (ParentTabs != null && !string.IsNullOrEmpty(Value))
+        {
+            await ParentTabs.SetValue(Value);
+        }
+        await OnClick.InvokeAsync();
+    }
+}

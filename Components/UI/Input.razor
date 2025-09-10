@@ -1,0 +1,29 @@
+@using GiftOfGivers.Client.Helpers
+
+<input class="@GetInputClasses()" 
+       type="@Type" 
+       value="@Value" 
+       placeholder="@Placeholder"
+       @onchange="OnValueChanged"
+       @attributes="AdditionalAttributes" />
+
+@code {
+    [Parameter] public string Type { get; set; } = "text";
+    [Parameter] public string? Value { get; set; }
+    [Parameter] public string? Placeholder { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter] public EventCallback<string> OnValueChanged { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetInputClasses()
+    {
+        var baseClasses = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm";
+        return Utils.Cn(baseClasses, Class);
+    }
+
+    private async Task OnValueChanged(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString();
+        await OnValueChanged.InvokeAsync(Value);
+    }
+}

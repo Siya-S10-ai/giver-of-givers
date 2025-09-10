@@ -1,0 +1,17 @@
+@using GiftOfGivers.Client.Helpers
+
+<div class="@GetFallbackClasses()" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetFallbackClasses()
+    {
+        var baseClasses = "flex h-full w-full items-center justify-center rounded-full bg-muted";
+        return Utils.Cn(baseClasses, Class);
+    }
+}

@@ -1,0 +1,40 @@
+@using GiftOfGivers.Client.Components
+@using GiftOfGivers.Client.Services
+@inherits LayoutBase
+@inject IToastService ToastService
+@inject IMobileService MobileService
+
+<div class="min-h-screen bg-background text-foreground">
+    <Navigation User="@currentUser" OnLogout="HandleLogout" />
+    
+    <main>
+        @Body
+    </main>
+</div>
+
+@code {
+    private Navigation.UserModel? currentUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await MobileService.InitializeAsync();
+        
+        // Initialize user authentication state here
+        // This would typically check for stored authentication tokens
+        // and set the currentUser accordingly
+        
+        await base.OnInitializedAsync();
+    }
+
+    private async Task HandleLogout()
+    {
+        currentUser = null;
+        ToastService.ShowSuccess("Logged out successfully");
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        MobileService?.Dispose();
+    }
+}

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gift of Givers</title>
+    <base href="/" />
+    <link href="css/app.css" rel="stylesheet" />
+    <link href="GiftOfGivers.Client.styles.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="favicon.ico" />
+</head>
+
+<body>
+    <div id="app">
+        <div class="flex items-center justify-center min-h-screen">
+            <div class="text-center">
+                <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                <p class="mt-2 text-muted-foreground">Loading...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="blazor-error-ui">
+        <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div class="bg-white p-6 rounded-lg shadow-lg max-w-md">
+                <h3 class="text-lg font-semibold text-red-600 mb-2">An error has occurred</h3>
+                <p class="text-gray-600 mb-4">This application is no longer responsive to user interaction.</p>
+                <button class="bg-primary text-white px-4 py-2 rounded hover:bg-primary/90" onclick="window.location.reload()">
+                    Reload
+                </button>
+                <a class="ml-2 text-primary hover:underline" href="" onclick="document.getElementById('blazor-error-ui').style.display = 'none'">
+                    Dismiss
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script>
+        // Mobile detection and resize handling for MobileService
+        window.blazorCulture = {
+            get: () => window.localStorage['BlazorCulture'],
+            set: (value) => window.localStorage['BlazorCulture'] = value
+        };
+    </script>
+</body>
+
+</html>

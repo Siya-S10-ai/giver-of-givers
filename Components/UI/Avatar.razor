@@ -1,0 +1,17 @@
+@using GiftOfGivers.Client.Helpers
+
+<div class="@GetAvatarClasses()" @attributes="AdditionalAttributes">
+    @ChildContent
+</div>
+
+@code {
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetAvatarClasses()
+    {
+        var baseClasses = "relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full";
+        return Utils.Cn(baseClasses, Class);
+    }
+}

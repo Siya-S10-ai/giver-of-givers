@@ -1,0 +1,34 @@
+@using GiftOfGivers.Client.Helpers
+
+<button class="@GetCheckboxClasses()" 
+        @onclick="Toggle" 
+        role="checkbox" 
+        aria-checked="@Checked"
+        @attributes="AdditionalAttributes">
+    @if (Checked)
+    {
+        <svg class="h-4 w-4 text-current" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+    }
+</button>
+
+@code {
+    [Parameter] public bool Checked { get; set; }
+    [Parameter] public EventCallback<bool> OnCheckedChange { get; set; }
+    [Parameter] public string? Class { get; set; }
+    [Parameter(CaptureUnmatchedValues = true)] public Dictionary<string, object>? AdditionalAttributes { get; set; }
+
+    private string GetCheckboxClasses()
+    {
+        var baseClasses = "peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+        var stateClasses = Checked ? "bg-primary text-primary-foreground" : "bg-background";
+        return Utils.Cn(baseClasses, stateClasses, Class);
+    }
+
+    private async Task Toggle()
+    {
+        Checked = !Checked;
+        await OnCheckedChange.InvokeAsync(Checked);
+    }
+}
