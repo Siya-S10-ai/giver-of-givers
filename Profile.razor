@@ -1,5 +1,6 @@
 @page "/profile"
 @using GiftOfGivers.Shared.DTOs
+@using Microsoft.AspNetCore.Components.Forms
 @inject IAuthService AuthService
 @inject IApiService ApiService
 @inject IJSRuntime JSRuntime
@@ -38,8 +39,33 @@
                             <div class="space-y-6">
                                 <!-- Avatar Section -->
                                 <div class="flex items-center space-x-4">
-                                    <div class="w-20 h-20 bg-primary rounded-full flex items-center justify-center text-white text-2xl font-bold">
-                                        @GetInitials(profile.FirstName, profile.LastName)
+                                    <div class="relative">
+                                        <div class="w-20 h-20 rounded-full overflow-hidden bg-muted flex items-center justify-center">
+                                            @if (!string.IsNullOrEmpty(editModel.ProfilePicture))
+                                            {
+                                                <img src="@editModel.ProfilePicture" alt="Profile" class="w-full h-full object-cover" />
+                                            }
+                                            else if (!string.IsNullOrEmpty(profile.ProfilePicture))
+                                            {
+                                                <img src="@profile.ProfilePicture" alt="Profile" class="w-full h-full object-cover" />
+                                            }
+                                            else
+                                            {
+                                                <span class="text-2xl font-bold text-primary-foreground">
+                                                    @GetInitials(profile.FirstName, profile.LastName)
+                                                </span>
+                                            }
+                                        </div>
+                                        @if (isEditing)
+                                        {
+                                            <label class="absolute bottom-0 right-0 bg-primary text-primary-foreground rounded-full p-1 cursor-pointer hover:bg-primary/90 transition-colors">
+                                                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                </svg>
+                                                <InputFile OnChange="HandleImageUpload" accept="image/*" class="hidden" />
+                                            </label>
+                                        }
                                     </div>
                                     <div>
                                         <h2 class="text-xl font-semibold text-foreground">@($"{profile.FirstName} {profile.LastName}")</h2>
@@ -217,7 +243,8 @@
                     LastName = profile.LastName,
                     Email = profile.Email,
                     Phone = profile.Phone,
-                    Role = profile.Role
+                    Role = profile.Role,
+                    ProfilePicture = profile.ProfilePicture
                 };
 
                 // Load role-specific stats
@@ -254,7 +281,8 @@
                 LastName = profile.LastName,
                 Email = profile.Email,
                 Phone = profile.Phone,
-                Role = profile.Role
+                Role = profile.Role,
+                ProfilePicture = profile.ProfilePicture
             };
         }
     }
@@ -271,7 +299,8 @@
                 LastName = profile.LastName,
                 Email = profile.Email,
                 Phone = profile.Phone,
-                Role = profile.Role
+                Role = profile.Role,
+                ProfilePicture = profile.ProfilePicture
             };
         }
     }
@@ -313,5 +342,30 @@
     {
         public int CompletedTasks { get; set; }
         public int TotalHours { get; set; }
+    }
+
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            try
+            {
+                // Read file as base64 for preview (max 5MB)
+                using var stream = file.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+                using var memoryStream = new MemoryStream();
+                await stream.CopyToAsync(memoryStream);
+                var buffer = memoryStream.ToArray();
+                
+                var base64String = $"data:{file.ContentType};base64,{Convert.ToBase64String(buffer)}";
+                editModel.ProfilePicture = base64String;
+                
+                StateHasChanged();
+            }
+            catch (Exception ex)
+            {
+                await JSRuntime.InvokeVoidAsync("alert", $"Error uploading image: {ex.Message}");
+            }
+        }
     }
 }
