@@ -1,8 +1,12 @@
-# Welcome to your Lovable project
+# Blazor WebAssembly Project
 
 ## Project info
 
 **URL**: https://lovable.dev/projects/f0defa45-23a3-43f7-97fe-288285f07152
+
+## Overview
+
+This is a Blazor WebAssembly application with Tailwind CSS styling and Azure SQL database integration. The project has been converted from React to use Blazor's component-based architecture while maintaining the same design system and UI components.
 
 ## How can I edit this code?
 
@@ -18,7 +22,9 @@ Changes made via Lovable will be committed automatically to this repo.
 
 If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Requirements:
+- .NET 8.0 SDK or later
+- Node.js & npm (for Tailwind CSS build process) - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
 Follow these steps:
 
@@ -29,11 +35,14 @@ git clone <YOUR_GIT_URL>
 # Step 2: Navigate to the project directory.
 cd <YOUR_PROJECT_NAME>
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install npm dependencies for Tailwind CSS.
+npm install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Step 4: Restore .NET dependencies.
+dotnet restore
+
+# Step 5: Start the development server.
+dotnet watch run
 ```
 
 **Edit a file directly in GitHub**
@@ -54,11 +63,11 @@ npm run dev
 
 This project is built with:
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
+- Blazor WebAssembly
+- C# / .NET 8.0
 - Tailwind CSS
+- Azure SQL Database
+- Entity Framework Core
 
 ## How can I deploy this project?
 
