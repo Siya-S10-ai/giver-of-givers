@@ -38,10 +38,13 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install npm dependencies for Tailwind CSS.
 npm install
 
-# Step 4: Restore .NET dependencies.
+# Step 4: Build Tailwind CSS (in a separate terminal, keep running)
+npm run build-css
+
+# Step 5: Restore .NET dependencies.
 dotnet restore
 
-# Step 5: Start the development server.
+# Step 6: Start the development server.
 dotnet watch run
 ```
 
