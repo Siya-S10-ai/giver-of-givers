@@ -82,14 +82,14 @@
                         <label class="block text-sm font-medium text-foreground mb-2">I want to join as a:</label>
                         <div class="grid grid-cols-1 gap-3">
                             <label class="flex items-start p-3 border border-border rounded-lg hover:bg-muted/20 cursor-pointer @(registerForm.Role == "Reporter" ? "border-primary bg-primary/5" : "")">
-                                <InputRadio Value="@("Reporter")" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
+                                <InputRadio value="Reporter" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
                                 <div>
                                     <div class="font-medium text-foreground">Reporter</div>
                                     <div class="text-sm text-muted-foreground">Submit reports about situations that need assistance</div>
                                 </div>
                             </label>
                             <label class="flex items-start p-3 border border-border rounded-lg hover:bg-muted/20 cursor-pointer @(registerForm.Role == "Volunteer" ? "border-primary bg-primary/5" : "")">
-                                <InputRadio Value="@("Volunteer")" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
+                                <InputRadio value="Volunteer" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
                                 <div>
                                     <div class="font-medium text-foreground">Volunteer</div>
                                     <div class="text-sm text-muted-foreground">Help respond to reports and provide assistance</div>

@@ -1,6 +1,6 @@
 @using GiftOfGivers.Client.Components.UI
 @using GiftOfGivers.Client.Helpers
-@inject NavigationManager Navigation
+@inject NavigationManager NavManager
 @inject IJSRuntime JSRuntime
 
 <header class="bg-white shadow-sm sticky top-0 z-50">
@@ -139,7 +139,7 @@
 
     private async Task NavigateToHome()
     {
-        Navigation.NavigateTo("/");
+        NavManager.NavigateTo("/");
         isMenuOpen = false;
     }
 
@@ -155,9 +155,9 @@
 
     private async Task ScrollToSection(string sectionId)
     {
-        if (Navigation.Uri != Navigation.BaseUri)
+        if (NavManager.Uri != NavManager.BaseUri)
         {
-            Navigation.NavigateTo("/");
+            NavManager.NavigateTo("/");
             // Wait a bit for navigation to complete, then scroll
             await Task.Delay(100);
         }

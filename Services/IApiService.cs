@@ -1,3 +1,5 @@
+using GiftOfGivers.Shared.DTOs;
+
 namespace GiftOfGivers.Client.Services;
 
 public interface IApiService
@@ -39,14 +41,4 @@ public class DonationResult
 {
     public bool Success { get; set; }
     public string Message { get; set; } = "";
-}
-
-public class UserProfileDto
-{
-    public string Id { get; set; } = "";
-    public string FirstName { get; set; } = "";
-    public string LastName { get; set; } = "";
-    public string Email { get; set; } = "";
-    public string Role { get; set; } = "";
-    public DateTime CreatedDate { get; set; }
 }

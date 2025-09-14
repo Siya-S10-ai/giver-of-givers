@@ -1,3 +1,5 @@
+using GiftOfGivers.Shared.DTOs;
+
 namespace GiftOfGivers.Client.Services;
 
 public interface IAuthService

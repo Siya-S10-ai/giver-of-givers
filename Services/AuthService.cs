@@ -1,3 +1,5 @@
+using GiftOfGivers.Shared.DTOs;
+
 namespace GiftOfGivers.Client.Services;
 
 public class AuthService : IAuthService
@@ -24,7 +26,7 @@ public class AuthService : IAuthService
                 LastName = "User",
                 Email = loginForm.Email,
                 Role = "Volunteer",
-                CreatedDate = DateTime.Now
+                CreatedAt = DateTime.Now
             };
 
             return new AuthResult
@@ -54,7 +56,7 @@ public class AuthService : IAuthService
             LastName = registerForm.LastName,
             Email = registerForm.Email,
             Role = registerForm.Role,
-            CreatedDate = DateTime.Now
+            CreatedAt = DateTime.Now
         };
 
         return new AuthResult

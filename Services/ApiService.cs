@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using GiftOfGivers.Shared.DTOs;
 
 namespace GiftOfGivers.Client.Services;
 
@@ -57,7 +58,7 @@ public class ApiService : IApiService
             LastName = "Doe",
             Email = "john.doe@example.com",
             Role = "Volunteer",
-            CreatedDate = DateTime.Now.AddMonths(-6)
+            CreatedAt = DateTime.Now.AddMonths(-6)
         };
     }
 
