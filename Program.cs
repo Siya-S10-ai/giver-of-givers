@@ -9,6 +9,8 @@ builder.RootComponents.Add<App>("#app");
 // Add services
 builder.Services.AddScoped<IToastService, ToastService>();
 builder.Services.AddScoped<IMobileService, MobileService>();
+builder.Services.AddScoped<IApiService, ApiService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 // Add Azure SQL services
 builder.Services.AddDbContext<AzureDbContext>(options =>

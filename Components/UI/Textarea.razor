@@ -4,7 +4,7 @@
           value="@Value" 
           placeholder="@Placeholder"
           rows="@Rows"
-          @onchange="OnValueChanged"
+          @onchange="HandleValueChanged"
           @attributes="AdditionalAttributes"></textarea>
 
 @code {
@@ -21,7 +21,7 @@
         return Utils.Cn(baseClasses, Class);
     }
 
-    private async Task OnValueChanged(ChangeEventArgs e)
+    private async Task HandleValueChanged(ChangeEventArgs e)
     {
         Value = e.Value?.ToString();
         await OnValueChanged.InvokeAsync(Value);

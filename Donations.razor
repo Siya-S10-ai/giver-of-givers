@@ -112,15 +112,15 @@
                                 <label class="block text-sm font-medium text-foreground mb-2">Frequency</label>
                                 <div class="flex space-x-4">
                                     <label class="flex items-center">
-                                        <InputRadio Value="OneTime" @bind-Value="donationForm.Frequency" class="mr-2" />
+                                        <InputRadio Value="@("OneTime")" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
                                         One-time
                                     </label>
                                     <label class="flex items-center">
-                                        <InputRadio Value="Monthly" @bind-Value="donationForm.Frequency" class="mr-2" />
+                                        <InputRadio Value="@("Monthly")" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
                                         Monthly
                                     </label>
                                     <label class="flex items-center">
-                                        <InputRadio Value="Yearly" @bind-Value="donationForm.Frequency" class="mr-2" />
+                                        <InputRadio Value="@("Yearly")" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
                                         Yearly
                                     </label>
                                 </div>
