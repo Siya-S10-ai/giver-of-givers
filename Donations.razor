@@ -111,18 +111,18 @@
                             <div class="mb-6">
                                 <label class="block text-sm font-medium text-foreground mb-2">Frequency</label>
                                 <div class="flex space-x-4">
-                                    <label class="flex items-center">
-                                        <InputRadio value="OneTime" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
-                                        One-time
-                                    </label>
-                                    <label class="flex items-center">
-                                        <InputRadio value="Monthly" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
-                                        Monthly
-                                    </label>
-                                    <label class="flex items-center">
-                                        <InputRadio value="Yearly" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
-                                        Yearly
-                                    </label>
+                    <label class="flex items-center">
+                        <InputRadio Value="OneTime" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
+                        One-time
+                    </label>
+                    <label class="flex items-center">
+                        <InputRadio Value="Monthly" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
+                        Monthly
+                    </label>
+                    <label class="flex items-center">
+                        <InputRadio Value="Yearly" Name="frequency" @bind-Value="donationForm.Frequency" class="mr-2" />
+                        Yearly
+                    </label>
                                 </div>
                                 <ValidationMessage For="@(() => donationForm.Frequency)" class="text-destructive text-sm" />
                             </div>
@@ -214,9 +214,9 @@
 </div>
 
 @code {
-    private DonationFormDto donationForm = new();
-    private DonationStatsDto stats = new();
-    private List<DonationDto> recentDonations = new();
+    private GiftOfGivers.Client.Services.DonationFormDto donationForm = new();
+    private GiftOfGivers.Client.Services.DonationStatsDto stats = new();
+    private List<GiftOfGivers.Client.Services.DonationDto> recentDonations = new();
     private bool isLoading = false;
     private bool isProcessing = false;
     private int[] predefinedAmounts = { 25, 50, 100, 250, 500, 1000 };
@@ -269,7 +269,7 @@
             if (result.Success)
             {
                 await JSRuntime.InvokeVoidAsync("alert", "Thank you for your generous donation! You will receive a confirmation email shortly.");
-                donationForm = new DonationFormDto();
+                donationForm = new GiftOfGivers.Client.Services.DonationFormDto();
                 selectedAmount = 0;
                 await LoadDonationData(); // Refresh the data
             }
@@ -291,38 +291,5 @@
     private async Task ScrollToDonateForm()
     {
         await JSRuntime.InvokeVoidAsync("document.getElementById('donate-form').scrollIntoView", new { behavior = "smooth" });
-    }
-
-    public class DonationFormDto
-    {
-        public decimal Amount { get; set; }
-        public string Type { get; set; } = "";
-        public string Frequency { get; set; } = "OneTime";
-        public string FirstName { get; set; } = "";
-        public string LastName { get; set; } = "";
-        public string Email { get; set; } = "";
-        public string Message { get; set; } = "";
-    }
-
-    public class DonationStatsDto
-    {
-        public int TotalDonations { get; set; } = 1247;
-        public int FundedProjects { get; set; } = 89;
-        public int LivesImpacted { get; set; } = 15632;
-    }
-
-    public class DonationDto
-    {
-        public string DonorName { get; set; } = "";
-        public decimal Amount { get; set; }
-        public string Type { get; set; } = "";
-        public string Message { get; set; } = "";
-        public DateTime CreatedAt { get; set; }
-    }
-
-    public class DonationResult
-    {
-        public bool Success { get; set; }
-        public string Message { get; set; } = "";
     }
 }

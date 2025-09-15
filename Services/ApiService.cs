@@ -18,9 +18,9 @@ public class ApiService : IApiService
         await Task.Delay(100);
         return new DonationStatsDto
         {
-            TotalDonations = 2500000,
-            ProjectsFunded = 180,
-            LivesImpacted = 45000
+            TotalDonations = 1247,
+            FundedProjects = 89,
+            LivesImpacted = 15632
         };
     }
 
@@ -30,9 +30,9 @@ public class ApiService : IApiService
         await Task.Delay(100);
         return new List<DonationDto>
         {
-            new() { DonorName = "Anonymous", Amount = 500, Date = DateTime.Now.AddDays(-1), Type = "Food Aid" },
-            new() { DonorName = "John D.", Amount = 200, Date = DateTime.Now.AddDays(-2), Type = "Medical Supplies" },
-            new() { DonorName = "Sarah M.", Amount = 1000, Date = DateTime.Now.AddDays(-3), Type = "Disaster Relief" }
+            new() { DonorName = "Anonymous", Amount = 500, Type = "Food Aid", Message = "Keep up the great work!", CreatedAt = DateTime.Now.AddDays(-1) },
+            new() { DonorName = "John D.", Amount = 200, Type = "Medical Supplies", CreatedAt = DateTime.Now.AddDays(-2) },
+            new() { DonorName = "Sarah M.", Amount = 1000, Type = "Disaster Relief", CreatedAt = DateTime.Now.AddDays(-3) }
         };
     }
 
@@ -47,7 +47,7 @@ public class ApiService : IApiService
         };
     }
 
-    public async Task<UserProfileDto> GetUserProfileAsync(string userId)
+    public async Task<UserProfileDto?> GetUserProfileAsync(string userId)
     {
         // Mock data
         await Task.Delay(100);
@@ -62,10 +62,30 @@ public class ApiService : IApiService
         };
     }
 
-    public async Task<bool> UpdateUserProfileAsync(string userId, UserProfileDto profile)
+    public async Task<UserProfileDto> UpdateUserProfileAsync(string userId, UserProfileDto profile)
     {
         // Mock update
         await Task.Delay(500);
-        return true;
+        return profile;
+    }
+
+    public async Task<ReporterStatsDto> GetReporterStatsAsync(string userId)
+    {
+        await Task.Delay(300);
+        return new ReporterStatsDto
+        {
+            TotalReports = 12,
+            VerifiedReports = 10
+        };
+    }
+
+    public async Task<VolunteerStatsDto> GetVolunteerStatsAsync(string userId)
+    {
+        await Task.Delay(300);
+        return new VolunteerStatsDto
+        {
+            CompletedTasks = 25,
+            TotalHours = 150
+        };
     }
 }

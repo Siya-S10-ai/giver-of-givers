@@ -82,14 +82,14 @@
                         <label class="block text-sm font-medium text-foreground mb-2">I want to join as a:</label>
                         <div class="grid grid-cols-1 gap-3">
                             <label class="flex items-start p-3 border border-border rounded-lg hover:bg-muted/20 cursor-pointer @(registerForm.Role == "Reporter" ? "border-primary bg-primary/5" : "")">
-                                <InputRadio value="Reporter" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
+                                <InputRadio Value="Reporter" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
                                 <div>
                                     <div class="font-medium text-foreground">Reporter</div>
                                     <div class="text-sm text-muted-foreground">Submit reports about situations that need assistance</div>
                                 </div>
                             </label>
                             <label class="flex items-start p-3 border border-border rounded-lg hover:bg-muted/20 cursor-pointer @(registerForm.Role == "Volunteer" ? "border-primary bg-primary/5" : "")">
-                                <InputRadio value="Volunteer" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
+                                <InputRadio Value="Volunteer" Name="role" @bind-Value="registerForm.Role" class="mt-1 mr-3" />
                                 <div>
                                     <div class="font-medium text-foreground">Volunteer</div>
                                     <div class="text-sm text-muted-foreground">Help respond to reports and provide assistance</div>
@@ -196,7 +196,7 @@
 </div>
 
 @code {
-    private RegisterFormDto registerForm = new();
+    private GiftOfGivers.Client.Services.RegisterFormDto registerForm = new();
     private bool isLoading = false;
     private bool isSubmitting = false;
     private bool showPassword = false;
@@ -241,37 +241,5 @@
         {
             isSubmitting = false;
         }
-    }
-
-    public class RegisterFormDto
-    {
-        [Required(ErrorMessage = "First name is required")]
-        [StringLength(50, ErrorMessage = "First name must be less than 50 characters")]
-        public string FirstName { get; set; } = "";
-
-        [Required(ErrorMessage = "Last name is required")]
-        [StringLength(50, ErrorMessage = "Last name must be less than 50 characters")]
-        public string LastName { get; set; } = "";
-
-        [Required(ErrorMessage = "Email is required")]
-        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
-        public string Email { get; set; } = "";
-
-        [Phone(ErrorMessage = "Please enter a valid phone number")]
-        public string Phone { get; set; } = "";
-
-        [Required(ErrorMessage = "Please select a role")]
-        public string Role { get; set; } = "";
-
-        [Required(ErrorMessage = "Password is required")]
-        [StringLength(100, MinimumLength = 8, ErrorMessage = "Password must be at least 8 characters long")]
-        public string Password { get; set; } = "";
-
-        [Required(ErrorMessage = "Please confirm your password")]
-        [Compare("Password", ErrorMessage = "Passwords do not match")]
-        public string ConfirmPassword { get; set; } = "";
-
-        [Range(typeof(bool), "true", "true", ErrorMessage = "You must accept the terms and conditions")]
-        public bool AcceptTerms { get; set; } = false;
     }
 }

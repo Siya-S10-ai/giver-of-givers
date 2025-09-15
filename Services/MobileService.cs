@@ -2,7 +2,7 @@ using Microsoft.JSInterop;
 
 namespace GiftOfGivers.Client.Services
 {
-    public interface IMobileService
+    public interface IMobileService : IDisposable
     {
         Task<bool> IsMobileAsync();
         Task InitializeAsync();

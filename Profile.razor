@@ -216,8 +216,8 @@
 @code {
     private UserProfileDto? profile;
     private UserProfileDto editModel = new();
-    private ReporterStatsDto reportStats = new();
-    private VolunteerStatsDto volunteerStats = new();
+    private GiftOfGivers.Client.Services.ReporterStatsDto reportStats = new();
+    private GiftOfGivers.Client.Services.VolunteerStatsDto volunteerStats = new();
     private bool isLoading = true;
     private bool isEditing = false;
     private bool isSaving = false;
@@ -232,7 +232,7 @@
         try
         {
             isLoading = true;
-            profile = await ApiService.GetUserProfileAsync();
+            profile = await ApiService.GetUserProfileAsync("current");
             
             if (profile != null)
             {
@@ -310,7 +310,7 @@
         try
         {
             isSaving = true;
-            var updatedProfile = await ApiService.UpdateUserProfileAsync(editModel);
+            var updatedProfile = await ApiService.UpdateUserProfileAsync("current", editModel);
             profile = updatedProfile;
             isEditing = false;
             await JSRuntime.InvokeVoidAsync("alert", "Profile updated successfully!");
@@ -330,18 +330,6 @@
         var firstInitial = !string.IsNullOrEmpty(firstName) ? firstName[0].ToString().ToUpper() : "U";
         var lastInitial = !string.IsNullOrEmpty(lastName) ? lastName[0].ToString().ToUpper() : "N";
         return firstInitial + lastInitial;
-    }
-
-    public class ReporterStatsDto
-    {
-        public int TotalReports { get; set; }
-        public int VerifiedReports { get; set; }
-    }
-
-    public class VolunteerStatsDto
-    {
-        public int CompletedTasks { get; set; }
-        public int TotalHours { get; set; }
     }
 
     private async Task HandleImageUpload(InputFileChangeEventArgs e)

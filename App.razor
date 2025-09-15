@@ -1,26 +1,13 @@
-@using GiftOfGivers.Client.Components.UI
 @using Microsoft.AspNetCore.Components.Routing
-@using Microsoft.AspNetCore.Components.WebAssembly.Http
 
 <Router AppAssembly="@typeof(App).Assembly">
     <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)" />
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
+        <RouteView RouteData="@routeData" DefaultLayout="@typeof(Shared.MainLayout)" />
     </Found>
     <NotFound>
         <PageTitle>Not found</PageTitle>
-        <LayoutView Layout="@typeof(MainLayout)">
-            <p role="alert">Sorry, there's nothing at this address.</p>
+        <LayoutView Layout="@typeof(Shared.MainLayout)">
+            <NotFound />
         </LayoutView>
     </NotFound>
 </Router>
-
-<!-- Toast notifications -->
-<Toast />
-
-@code {
-    protected override void OnInitialized()
-    {
-        // Initialize any global services here
-    }
-}

@@ -35,6 +35,7 @@
 
     public new void Dispose()
     {
-        MobileService?.Dispose();
+        // MobileService.Dispose() is handled in the MobileService itself when it's disposed by DI
+        base.Dispose();
     }
 }
